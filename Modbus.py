@@ -1,8 +1,6 @@
 import serial
-import random
 import time
 import os
-import requests
 #CRC Calculation
 
 def CRCcal(msg) :
@@ -148,20 +146,20 @@ def Func04Modbus(slave,start,NumOfPoints):
 #Serial Port 19200,8,N,1
 #Serial Open
 try:
-        ser = serial.Serial(
-                port = '/dev/ttyUSB0',
-                baudrate = 9600,
-                bytesize = serial.EIGHTBITS,
-                parity = serial.PARITY_NONE,
-                stopbits = serial.STOPBITS_ONE,
-                timeout = 1000
-                
-        )
-except ValuuError :
-        print "Port Can not be opened"
+    ser = serial.Serial(
+            port = '/dev/ttyUSB0',
+            baudrate = 9600,
+            bytesize = serial.EIGHTBITS,
+            parity = serial.PARITY_NONE,
+            stopbits = serial.STOPBITS_ONE,
+            timeout = 1000
+            
+    )
+except ValueError :
+    print("Port Can not be opened")
 
 
-print "START"
+print("START")
 while 1:       
     #Serial Open Check
     if not ser.isOpen:ser.open()
@@ -199,43 +197,9 @@ while 1:
     ammoniaSensorValue = Func04Modbus(11,Start_address,Number_of_Registers)#slave,start,number of registers
     print(ammoniaSensorValue)
     
- #    if len(Func04ArrayValue)>0:
-	# url = 'http://103.9.185.218/cat_generator/api/add_generator_data'
-
-	# params = {
-	# 	'generatorID' : Slave_id,
-	# 	'staddress': Start_address,
-	# 	'reg1': Func04ArrayValue[0],
-	# 	'reg2': Func04ArrayValue[1],
-	# 	'reg3': Func04ArrayValue[2],
-	# 	'reg4': Func04ArrayValue[3],
-	# 	'reg5': Func04ArrayValue[4],
-	# 	'reg6': Func04ArrayValue[5],
-	# 	'reg7': Func04ArrayValue[6],
-	# 	'reg8': Func04ArrayValue[7],
-	# 	'reg9': Func04ArrayValue[8],
-	# 	'reg10': Func04ArrayValue[9],
-	# 	'deviceID': '1'
-	# 	}
-	# results = requests.get(url, params = params)
-	# print results.content
- #        for i in range(1, len(Func04ArrayValue)):
- #            print "Read of Registers" + str(i) + " = " + str(Func04ArrayValue[i])
     time.sleep(10)
     os.system('clear')
-##    Fill Random Value for Write
-##    totalvalue=2
-##    val = [0 for i in range(totalvalue)]
-##    for i in range(0, len(val)):
-##        val[i] = random.randrange(-32767,32767) #Random Valiue from -32767 to max 32767
-##
-##    #Write of Registers
-##    WriteValid = Func16Modbus(1,2,val)#slave,start,array value
-##    if WriteValid:
-##        for i in range(0, len(val)):
-##            print "Write of Registers" + str(i) + " = " + str(val[i])
-##
-##        print "#################################"
+
     
 
     
