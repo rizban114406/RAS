@@ -8,6 +8,8 @@ from rasModbusCommunication import rasModbusCommunication
 import time
 import os
 import numpy
+from rasLCD import rasLCD
+rasLCDObject = rasLCD()
 
 phMagnification = 0.01 
 salinityMagnification = 0.01
@@ -49,38 +51,43 @@ def claculatePHValue(phSensorValue):
     return phValue
 
 if __name__ == '__main__':
+    rasLCDObject.printInitialMessage()
     modbusObject = rasModbusCommunication()
     while 1:
-        modbusObject.openSerial()
-        Slave_id = 2
-        Start_address = 0
-        Number_of_Registers = 10
-        
-        #pH Sensor
-        phSensorValue = modbusObject.Func03Modbus(PHSLAVEADDRESS,Start_address,Number_of_Registers)#slave,start,number of registers
-        phValue = claculatePHValue(phSensorValue)
-        time.sleep(1)
-        #Salinity Sensor
-        salinitySensorValue = modbusObject.Func03Modbus(SALINITYSLAVEADDRESS,Start_address,Number_of_Registers)#slave,start,number of registers
-        salinityValue = calculateSalinityValue(salinitySensorValue)
-        time.sleep(1)
-        
-        #ORP Sensor
-        orpSensorValue = modbusObject.Func03Modbus(ORPSLAVEADDRESS,Start_address,Number_of_Registers)#slave,start,number of registers
-        orpValue = calculateOrpValue(orpSensorValue)
-        time.sleep(1)
-        
-        #DO Sensor
-        doSensorValue = modbusObject.Func03Modbus(DOSLAVEADDRESS,Start_address,Number_of_Registers)#slave,start,number of registers
-        doValue = calculateDOValue(doSensorValue)
-        time.sleep(1)
-    #    
-        #Ammonia Sensor
-        ammoniaSensorValue = modbusObject.Func04Modbus(AMMONIASLAVEADDRESS,Start_address,Number_of_Registers)#slave,start,number of registers
-        ammoniaValue = calculateAmmoniaValue(ammoniaSensorValue)
-        
-        time.sleep(10)
-        os.system('clear')
+        try:
+            modbusObject.openSerial()
+            rasLCDObject.printPleaseWait()
+            Slave_id = 2
+            Start_address = 0
+            Number_of_Registers = 10
+            
+            #pH Sensor
+            phSensorValue = modbusObject.Func03Modbus(PHSLAVEADDRESS,Start_address,Number_of_Registers)#slave,start,number of registers
+            phValue = claculatePHValue(phSensorValue)
+            time.sleep(1)
+            #Salinity Sensor
+            salinitySensorValue = modbusObject.Func03Modbus(SALINITYSLAVEADDRESS,Start_address,Number_of_Registers)#slave,start,number of registers
+            salinityValue = calculateSalinityValue(salinitySensorValue)
+            time.sleep(1)
+            
+            #ORP Sensor
+            orpSensorValue = modbusObject.Func03Modbus(ORPSLAVEADDRESS,Start_address,Number_of_Registers)#slave,start,number of registers
+            orpValue = calculateOrpValue(orpSensorValue)
+            time.sleep(1)
+            
+            #DO Sensor
+            doSensorValue = modbusObject.Func03Modbus(DOSLAVEADDRESS,Start_address,Number_of_Registers)#slave,start,number of registers
+            doValue = calculateDOValue(doSensorValue)
+            time.sleep(1)
+        #    
+            #Ammonia Sensor
+            ammoniaSensorValue = modbusObject.Func04Modbus(AMMONIASLAVEADDRESS,Start_address,Number_of_Registers)#slave,start,number of registers
+            ammoniaValue = calculateAmmoniaValue(ammoniaSensorValue)
+            
+            time.sleep(10)
+            os.system('clear')
+        except Exception as e:
+            print("Exception Message: {}".format(e))
         
         
     
