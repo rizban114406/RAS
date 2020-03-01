@@ -7,45 +7,29 @@ Created on Thu Feb 20 01:05:00 2020
 from rasModbusCommunication import rasModbusCommunication
 import time
 import os
+import numpy
 
 phMagnification = 0.01 
 salinityMagnification = 0.01
 orpMagnification = 0.01
 
--35424
-16606
-a = -35424
-print(bin(a))
-0b1000101001100000
-0b100000011011110
-b = 16606
-print(bin(b))
-new = a | b >> 16
-print(bin(new))
-#0b11010010000000001111000
-#from ast import literal_eval
-#
-#float_str = "0b11010010000000001111000"
-#result = float(literal_eval(float_str))
-#print(result)
-#
-#from struct import *
-## Two integers to a floating point
-#i1 = 0xC3F5
-#i2 = 0x4840
-#f = unpack('f',pack('>HH',i1,i2))[0]
-#
-## Floating point to two integers
-#i1, i2 = unpack('>HH',pack('f',3.14))
-#print(i1)
-#print(i2)
+PHSLAVEADDRESS = 2
+SALINITYSLAVEADDRESS = 4
+ORPSLAVEADDRESS = 3
+DOSLAVEADDRESS = 10
+AMMONIASLAVEADDRESS = 11
+
+def calculateAmmoniaValue(ammoniaSensorValue):
+    ammoniaValue=numpy.array(ammoniaSensorValue[0:2], numpy.int16)
+    ammoniaValue.dtype = numpy.float32
+    print("Water Ammonia level: {}".format(float(ammoniaValue[0])))
+    return ammoniaValue[0]
 
 def calculateDOValue(doSensorValue):
-    print(doSensorValue[0])
-    print(doSensorValue[1])
-    doValue = doSensorValue[0] << 16 | doSensorValue[1]
-    print("Water DO level: {}".format(float(doValue)))
-    return doValue
+    doValue=numpy.array(doSensorValue[0:2], numpy.int16)
+    doValue.dtype = numpy.float32
+    print("Water DO level: {}".format(float(doValue[0])))
+    return doValue[0]
 #    a = 105
 #    print(bin(a))
 
@@ -73,31 +57,27 @@ if __name__ == '__main__':
         Number_of_Registers = 10
         
         #pH Sensor
-        phSensorValue = modbusObject.Func03Modbus(2,Start_address,Number_of_Registers)#slave,start,number of registers
-        claculatePHValue(phSensorValue)
+        phSensorValue = modbusObject.Func03Modbus(PHSLAVEADDRESS,Start_address,Number_of_Registers)#slave,start,number of registers
+        phValue = claculatePHValue(phSensorValue)
         time.sleep(1)
-#        #Salinity Sensor
-#        print("Salinity Sensor Value: ")
-#        salinitySensorValue = modbusObject.Func03Modbus(4,Start_address,Number_of_Registers)#slave,start,number of registers
-#        print(salinitySensorValue)
-#        time.sleep(1)
+        #Salinity Sensor
+        salinitySensorValue = modbusObject.Func03Modbus(SALINITYSLAVEADDRESS,Start_address,Number_of_Registers)#slave,start,number of registers
+        salinityValue = calculateSalinityValue(salinitySensorValue)
+        time.sleep(1)
         
-    #    #ORP Sensor
-#        print("ORP Sensor Value: ")
-#        orpSensorValue = modbusObject.Func03Modbus(3,Start_address,Number_of_Registers)#slave,start,number of registers
-#        print(orpSensorValue)
-#        time.sleep(1)
-    #    
-    #    DO Sensor
-#        print("DO Sensor Value: ")
-        doSensorValue = modbusObject.Func03Modbus(10,Start_address,Number_of_Registers)#slave,start,number of registers
-        calculateDOValue(doSensorValue)
+        #ORP Sensor
+        orpSensorValue = modbusObject.Func03Modbus(ORPSLAVEADDRESS,Start_address,Number_of_Registers)#slave,start,number of registers
+        orpValue = calculateOrpValue(orpSensorValue)
+        time.sleep(1)
+        
+        #DO Sensor
+        doSensorValue = modbusObject.Func03Modbus(DOSLAVEADDRESS,Start_address,Number_of_Registers)#slave,start,number of registers
+        doValue = calculateDOValue(doSensorValue)
         time.sleep(1)
     #    
-#        #pH Sensor
-#        print("Ammonia Sensor Value: ")
-#        ammoniaSensorValue = modbusObject.Func04Modbus(11,Start_address,Number_of_Registers)#slave,start,number of registers
-#        print(ammoniaSensorValue)
+        #Ammonia Sensor
+        ammoniaSensorValue = modbusObject.Func04Modbus(AMMONIASLAVEADDRESS,Start_address,Number_of_Registers)#slave,start,number of registers
+        ammoniaValue = calculateAmmoniaValue(ammoniaSensorValue)
         
         time.sleep(10)
         os.system('clear')
