@@ -25,12 +25,16 @@ class rasLCD:
         self.lcd.printline(2 , "    ACCESS DENIED   ")
         t.sleep(2)
 
-    def printDeviceMaintanace(self):
+    def printDeviceData(self,phValue,doValue,salValue,orpValue,ammoniaValue,tempValue):
         self.printClearScreen()
-        self.lcd.printline(0 , "    DEVICE UNDER    ") 
-        self.lcd.printline(1 , "    MAINTAINANCE    ")
-        self.lcd.printline(3 , "  PLEASE TRY LATER  ")
-        t.sleep(2)
+        message1 = "PH :"+ phValue     + "  DO :" + doValue
+        message2 = "Sal:"+ salValue    + "  ORP:" + orpValue
+        message3 = "NH3:"+ ammoniaValue+ "  Tem:" + tempValue
+        self.lcd.printline(0 , "  WATER PARAMETERS  ") 
+        self.lcd.printline(1 , message1)
+        self.lcd.printline(2 , message2)
+        self.lcd.printline(3 , message3)
+#        t.sleep(2)
         
     def printClearScreen(self):
         self.lcd.printline(0 , "                    ")
@@ -99,12 +103,12 @@ class rasLCD:
 
     def printPleaseWait(self):
         self.lcd.printline(0 , "                    ")
-        self.lcd.printline(1 , " PLEASE WAIT")
-        for i in range(0,7):
-            self.lcd.printstr(".")
-            t.sleep(.2)
         self.lcd.printline(2 , "                    ")
         self.lcd.printline(3 , "                    ")
+        self.lcd.printline(1 , " PLEASE WAIT")
+        for i in range(0,5):
+            self.lcd.printstr(".")
+            t.sleep(.2)
 #        t.sleep(.2)
 
     def enrollmentMode(self):

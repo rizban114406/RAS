@@ -6,7 +6,7 @@ Created on Wed Feb 19 11:25:37 2020
 """
 import serial
 class rasModbusCommunication:
-    def __init__(self, port = '/dev/ttyUSB0', baudrate = 9600, timeout = 1000):
+    def __init__(self, port = '/dev/ttyUSB0', baudrate = 9600, timeout = 5):
         self.__serial = serial.Serial(port = port,\
                                       baudrate = baudrate,\
                                       bytesize = serial.EIGHTBITS,\
